@@ -13,12 +13,24 @@ export const loadBikeHubs = (map: mapboxgl.Map, hubData: BikeHub[]) => {
     type: "symbol",
     source: "hub-source",
     layout: {
+      "text-field": [
+        "format",
+        ["get", "available_vehicles"],
+        {
+          "font-scale": 1,
+        },
+      ],
+      "text-offset": [0.6, 0],
       "icon-allow-overlap": true,
       "text-allow-overlap": true,
-      "icon-image": "bicycle",
-      "icon-size": 2,
+      "icon-image": "cycle-bg-light",
+      "icon-size": 0.8,
     },
-    paint: {},
+    paint: {
+      "text-color": "#000",
+      "text-halo-color": "#000",
+      "text-halo-width": 0.3,
+    },
   });
 };
 

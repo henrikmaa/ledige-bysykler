@@ -3,6 +3,8 @@ import * as React from "react";
 // @ts-ignore
 import mapboxgl from "!mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { onFeatureClick } from "./Events/feature.click";
+import { MapMouseEvent } from "mapbox-gl";
 
 interface MapboxMapProps {
   initialOptions?: Omit<mapboxgl.MapboxOptions, "container">;
@@ -11,9 +13,10 @@ interface MapboxMapProps {
   onMove?(map: mapboxgl.Map): void;
   onClickCallback?(feature: any): void;
   onRemoved?(): void;
-  initialPosition?: [];
+  initialPosition?: Array<number>;
   minZoom?: number;
   massType?: string | undefined;
+  onClickCallback?: (feature: any) => void;
 }
 
 function MapboxMap({
@@ -24,6 +27,7 @@ function MapboxMap({
   onMove,
   initialPosition,
   minZoom,
+  onClickCallback,
 }: MapboxMapProps) {
   const [, setMap] = React.useState<mapboxgl.Map>();
   const mapNode = React.useRef(null);
@@ -36,9 +40,9 @@ function MapboxMap({
     mapboxMap = new mapboxgl.Map({
       container: node,
       accessToken: process.env.REACT_APP_MAPBOX_TOKEN,
-      style: "mapbox://styles/henrikmaa/ckvve8b403vqq15pb4cwak5dg",
+      style: "mapbox://styles/henrikmaa/ckpgvm9aq054l17qcqnupn5uq",
       center: initialPosition ?? [0, 0],
-      zoom: 6.5,
+      zoom: 14,
       minZoom: minZoom ?? null,
       trackResize: true,
       ...initialOptions,
@@ -54,6 +58,12 @@ function MapboxMap({
         onLoaded(mapboxMap);
       }
     });
+
+    if (onClickCallback) {
+      onFeatureClick("hubs", mapboxMap, (event: MapMouseEvent) =>
+        onClickCallback(event)
+      );
+    }
 
     return () => {
       mapboxMap.remove();
